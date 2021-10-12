@@ -2,7 +2,7 @@
 // import "./App.css";
 import { Component } from "react";
 import { v4 as uuidv4 } from "uuid";
-import contacts from "./contacts.json";
+// import contacts from "./contacts.json";
 import ContactList from "./ContactList";
 import ContactForm from "./ContactForm";
 import Filter from "./Filter";
@@ -10,9 +10,23 @@ import s from "./Phonebook.module.css";
 
 class App extends Component {
   state = {
-    contacts: contacts,
+    contacts: [],
     filter: "",
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem("contacts");
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem("contacts", JSON.stringify(this.state.contacts));
+    }
+  }
 
   addContact = (name, number) => {
     const contact = {
